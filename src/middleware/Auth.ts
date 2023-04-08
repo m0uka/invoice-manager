@@ -32,9 +32,8 @@ export function parseActor(req: Request, res: Response, next: NextFunction) {
         const decoded = jwt.verify(accessToken!, process.env.JWT_SECRET, {
             complete: true
         });
-
-        console.log(decoded);
-        /*req.actor = new Actor('user', decoded.payload.user_id);*/
+        
+        req.actor = new Actor('user', decoded.payload['user_id']);
     }
 
     if (actorType === 'anonymous') {

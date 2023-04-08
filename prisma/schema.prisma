@@ -9,3 +9,86 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id String @id @default(uuid())
+
+  username String @unique
+  password String
+
+  userSettings UserSettings[]
+}
+
+model UserSettings {
+  userId String @id
+  user   User   @relation(fields: [userId], references: [id])
+
+  name                 String?
+  streetAddress        String?
+  postalCode           String?
+  city                 String?
+  country              String?
+  identificationNumber String?
+  vatPayer             Boolean?
+
+  preferredCurrency String  @default("USD")
+  additionalText    String?
+}
+
+model Customer {
+  id     String @id @default(uuid())
+  number Int    @unique @default(autoincrement())
+
+  name                 String
+  streetAddress        String?
+  postalCode           String?
+  city                 String?
+  country              String?
+  identificationNumber String?
+
+  taxExempt Boolean?
+
+  invoices Invoice[]
+}
+
+model Invoice {
+  id         String   @id @default(uuid())
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id])
+  number     Int      @unique @default(autoincrement())
+
+  paid Boolean @default(false)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime?
+  dueAt     DateTime?
+
+  currency String
+
+  invoiceLines    InvoiceLine[]
+  invoicePayments InvoicePayment[]
+}
+
+model InvoiceLine {
+  id String @id @default(uuid())
+
+  invoiceId String
+  invoice   Invoice @relation(fields: [invoiceId], references: [id])
+
+  lineText String
+  amount   Decimal
+}
+
+model InvoicePayment {
+  id String @id @default(uuid())
+
+  invoiceId String
+  invoice   Invoice @relation(fields: [invoiceId], references: [id])
+
+  paymentMethod     String
+  amount            Decimal
+  externalPaymentId String?
+
+  createdAt DateTime @default(now())
+  paidAt    DateTime
+}
