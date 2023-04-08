@@ -1,9 +1,9 @@
-import express, { Express, NextFunction, Request, Response } from 'express';
+import express, { Express, Request, Response } from 'express';
 import 'express-async-errors';
 import dotenv from 'dotenv';
 import bodyParser from 'body-parser';
 import BaseController from './controllers';
-import handleError, { AppError } from './middleware/Error';
+import handleError from './middleware/Error';
 
 dotenv.config();
 

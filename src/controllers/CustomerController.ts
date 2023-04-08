@@ -1,6 +1,5 @@
 import express from 'express';
 import { createCustomer, deleteCustomer, getCustomers } from '../services/CustomerService';
-import { AppError } from '../middleware/Error';
 
 const router = express.Router();
 
