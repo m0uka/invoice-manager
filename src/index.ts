@@ -2,8 +2,9 @@ import express, { Express, Request, Response } from 'express';
 import 'express-async-errors';
 import dotenv from 'dotenv';
 import bodyParser from 'body-parser';
-import BaseController from './controllers';
+import BaseController from './controllers/IndexController';
 import handleError from './middleware/Error';
+import { useSwaggerDocs } from './utils/swagger';
 
 dotenv.config();
 
@@ -17,6 +18,8 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 app.use('/api/v1', BaseController);
+
+useSwaggerDocs(app);
 
 app.use(handleError);
 
