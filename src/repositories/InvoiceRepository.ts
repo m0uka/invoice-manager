@@ -1,5 +1,6 @@
 import Database from '../infrastructure/Database';
 import { Invoice, Prisma } from '@prisma/client';
+import { AppError } from '../middleware/Error';
 
 export async function getInvoice(id: string) {
 	return Database.invoice.findUnique({
@@ -27,7 +28,17 @@ export async function getInvoices(cursor?: number, take: number = 100, where?: P
 }
 
 export async function createInvoice(invoice: Prisma.InvoiceCreateInput): Promise<Invoice> {
-	return Database.invoice.create({
-		data: invoice,
-	});
+	try {
+		return await Database.invoice.create({
+			data: invoice,
+		});
+	}
+	catch (err: any) {
+		// Non-existing relation error (customer id)
+		if (err.code === 'P2025') {
+			throw new AppError('Invalid relation ID(s).', 400);
+		}
+
+		throw err;
+	}
 }
