@@ -2,7 +2,6 @@ import { Invoice } from '@prisma/client';
 import { CreateInvoiceRequest, CreateInvoiceRequestSchema } from '../requests/InvoiceRequests';
 import { createInvoice as createInvoiceRepository, getInvoice as getInvoiceRepository, getInvoices as getInvoicesRepository } from '../repositories/InvoiceRepository';
 
-
 export async function getInvoiceById(id: string) {
 	return await getInvoiceRepository(id);
 }
