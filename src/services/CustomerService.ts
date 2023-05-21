@@ -8,12 +8,12 @@ export async function getCustomers(cursor?: number, take: number = 100): Promise
 }
 
 export async function createCustomer(data: CreateCustomerRequest): Promise<Customer> {
-	CreateCustomerRequestSchema.parse(data);
+	const parsed = CreateCustomerRequestSchema.parse(data);
 
 	return createCustomerRepository({
 		// TypeScript is crying because of the name type being optional in the zod validation, even though it is not.
-		name: data.name,
-		...data,
+		name: parsed.name,
+		...parsed,
 	});
 }
 
