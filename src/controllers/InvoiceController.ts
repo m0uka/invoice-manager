@@ -1,7 +1,9 @@
 import express from 'express';
 import { createInvoice, getInvoice, getInvoices } from '../services/InvoiceService';
+import { authorized } from '../middleware/Auth';
 
 const router = express.Router();
+router.use(authorized);
 
 /**
  * @openapi

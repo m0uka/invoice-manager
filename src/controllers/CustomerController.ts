@@ -1,7 +1,9 @@
 import express from 'express';
 import { createCustomer, deleteCustomer, getCustomers } from '../services/CustomerService';
+import { authorized } from '../middleware/Auth';
 
 const router = express.Router();
+router.use(authorized);
 
 /**
  * @openapi
