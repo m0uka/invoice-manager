@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
+import { ZodError, ZodIssue } from 'zod';
 
 export class AppError extends Error {
 	status?: number;
@@ -18,6 +19,7 @@ interface ErrorResponse {
 	name: string;
 	message: string;
 	stack?: string;
+	errors?: ZodIssue[];
 }
 
 export default function handleError(err: Error | AppError, req: Request, res: Response, next: NextFunction) {
@@ -26,6 +28,18 @@ export default function handleError(err: Error | AppError, req: Request, res: Re
 	let status = 500;
 	if ('status' in err) {
 		status = err.status;
+	}
+
+	if (err instanceof ZodError) {
+		const zodErrorResponse: ErrorResponse = {
+			status,
+			name: 'ValidationError',
+			message: 'Form body validation failed.',
+			errors: err.errors
+		}
+
+		res.status(status).json(zodErrorResponse);
+		return;
 	}
 
 	const response: ErrorResponse = {

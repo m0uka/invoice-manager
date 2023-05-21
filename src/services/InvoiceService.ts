@@ -1,34 +1,27 @@
-import Database from '../infrastructure/Database';
-import { Invoice, Prisma } from '@prisma/client';
+import { Invoice } from '@prisma/client';
+import { CreateInvoiceRequest, CreateInvoiceRequestSchema } from '../requests/InvoiceRequests';
+import { createInvoice as createInvoiceRepository, getInvoice as getInvoiceRepository, getInvoices as getInvoicesRepository } from '../repositories/InvoiceRepository';
 
 
-export async function getInvoice(id: string) {
-	return Database.invoice.findUnique({
-		where: {
-			id
-		},
-		include: {
-			invoicePayments: true,
-			invoiceLines: true
-		}
-	})
+export async function getInvoiceById(id: string) {
+	return await getInvoiceRepository(id);
 }
 
-export async function getInvoices(cursor?: number, take: number = 100, where?: Prisma.InvoiceWhereInput): Promise<Invoice[]> {
-	return Database.invoice.findMany({
-		take,
-		where,
-		cursor: cursor ? {
-			number: cursor,
-		} : undefined,
-		orderBy: {
-			number: 'desc'
-		},
-	});
+export async function getInvoices(cursor?: number, take: number = 100): Promise<Invoice[]> {
+	return await getInvoicesRepository(cursor, take);
 }
 
-export async function createInvoice(invoice: Prisma.InvoiceCreateInput): Promise<Invoice> {
-	return Database.invoice.create({
-		data: invoice,
+export async function createInvoice(request: CreateInvoiceRequest): Promise<Invoice> {
+	CreateInvoiceRequestSchema.parse(request);
+
+	return await createInvoiceRepository({
+		customer: {
+			connect: {
+				id: request.customerId
+			}
+		},
+		dueAt: request.dueAt,
+		paid: request.paid,
+		currency: request.currency
 	});
 }

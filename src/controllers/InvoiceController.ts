@@ -1,5 +1,5 @@
 import express from 'express';
-import { createInvoice, getInvoice, getInvoices } from '../services/InvoiceService';
+import { createInvoice, getInvoiceById, getInvoices } from '../services/InvoiceService';
 import { authorized } from '../middleware/Auth';
 
 const router = express.Router();
@@ -72,7 +72,7 @@ router.get('/', async (req, res) => {
  *               $ref: '#/components/schemas/Invoice'
  */
 router.get('/:id', async (req, res) => {
-	const invoice = await getInvoice(req.params.id);
+	const invoice = await getInvoiceById(req.params.id);
 	res.send(invoice);
 })
 
@@ -91,8 +91,6 @@ router.get('/:id', async (req, res) => {
  *               $ref: '#/components/schemas/Invoice'
  */
 router.post('/', async (req, res) => {
-	// TODO: Perform some validation here
-
 	const invoice = await createInvoice(req.body);
 	res.send(invoice);
 });
