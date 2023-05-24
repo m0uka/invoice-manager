@@ -27,3 +27,14 @@ export class Result<T> {
 
 
 axios.defaults.baseURL = BASE_URL;
+
+// Can't be arsed making a proper Authenticated component
+axios.interceptors.response.use((response) => {
+	return response;
+}, (error) => {
+	if (error.response.status === 401) {
+		return window.location.href = '/auth';
+	}
+
+	return Promise.reject(error);
+});

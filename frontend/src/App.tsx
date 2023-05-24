@@ -3,8 +3,14 @@ import React from 'react';
 import Auth from './pages/auth/Auth';
 import { ErrorBoundary } from 'react-error-boundary';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import Dashboard from './pages/dashboard/Dashboard';
+import BaseLayout from './components/layout/BaseLayout';
 
 let router = createBrowserRouter([
+    {
+        path: '/',
+        element: <Dashboard />
+    },
     {
         path: '/auth',
         element: <Auth />
