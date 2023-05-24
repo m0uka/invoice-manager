@@ -32,13 +32,13 @@ export default function handleError(err: Error | AppError, req: Request, res: Re
 
 	if (err instanceof ZodError) {
 		const zodErrorResponse: ErrorResponse = {
-			status,
+			status: 400,
 			name: 'ValidationError',
 			message: 'Form body validation failed.',
 			errors: err.errors
 		}
 
-		res.status(status).json(zodErrorResponse);
+		res.status(400).json(zodErrorResponse);
 		return;
 	}
 

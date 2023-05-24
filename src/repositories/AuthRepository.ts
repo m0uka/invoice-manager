@@ -1,6 +1,7 @@
 import { RegisterRequest, SignInRequest } from '../requests/AuthRequests';
 import Database from '../infrastructure/Database';
 import { AppError } from '../middleware/Error';
+import argon2 from 'argon2';
 
 export function getUserById(id: string) {
 	return Database.user.findFirst({
@@ -10,13 +11,18 @@ export function getUserById(id: string) {
 	});
 }
 
-export function checkUserSignIn(request: SignInRequest) {
-	return Database.user.findFirst({
+export async function checkUserSignIn(request: SignInRequest) {
+	const response = await Database.user.findFirst({
 		where: {
 			username: request.username,
-			password: request.password
 		}
 	})
+
+	if (!await argon2.verify(response.password, request.password)) {
+		return null;
+	}
+
+	return response;
 }
 
 export async function createUser(request: RegisterRequest) {

@@ -1,4 +1,5 @@
 import express, { Express, Request, Response } from 'express';
+import cors from 'cors';
 import 'express-async-errors';
 import dotenv from 'dotenv';
 import bodyParser from 'body-parser';
@@ -12,6 +13,9 @@ const app: Express = express();
 const port = process.env.PORT ?? 3000;
 
 app.use(bodyParser.json({ limit: '100mb' }));
+app.use(cors({
+  origin: ['http://localhost:5173']
+}));
 
 app.get('/', (req: Request, res: Response) => {
   res.send('Invoice Manager API');
