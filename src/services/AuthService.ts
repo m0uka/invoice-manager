@@ -31,11 +31,11 @@ export async function registerUser(request: RegisterRequest) {
     RegisterRequestSchema.parse(request);
 
     const hashedPassword = await argon2.hash(request.password);
-    request.password = hashedPassword;
 
-    await createUser(request);
-    return await signInUser({
+    await createUser({
         username: request.username,
         password: hashedPassword
     });
+
+    return await signInUser(request);
 }
