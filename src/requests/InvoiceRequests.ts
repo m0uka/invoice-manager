@@ -1,4 +1,4 @@
-import z, { boolean, date, string } from 'zod';
+import z, { boolean, date, number, string } from 'zod';
 
 export const CreateInvoiceRequestSchema = z.object({
 	customerId: string(),
@@ -8,3 +8,22 @@ export const CreateInvoiceRequestSchema = z.object({
 });
 
 export type CreateInvoiceRequest = z.infer<typeof CreateInvoiceRequestSchema>;
+
+export const CreateInvoiceLineRequestSchema = z.object({
+	invoiceId: string(),
+	lineText: string(),
+	amount: number(),
+	quantity: number()
+});
+
+export type CreateInvoiceLineRequest = z.infer<typeof CreateInvoiceLineRequestSchema>;
+
+export const CreateInvoicePaymentRequestSchema = z.object({
+	invoiceId: string(),
+	paymentMethod: string(),
+	amount: number(),
+	externalPaymentId: string(),
+	paidAt: date().optional()
+});
+
+export type CreateInvoicePaymentRequest = z.infer<typeof CreateInvoicePaymentRequestSchema>;

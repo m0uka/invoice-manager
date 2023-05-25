@@ -63,8 +63,6 @@ router.get('/', async (req, res) => {
  *               $ref: '#/components/schemas/Customer'
  */
 router.post('/', async (req, res) => {
-	// TODO: Perform some validation here
-
 	const customer = await createCustomer(req.body);
 	res.send(customer);
 });

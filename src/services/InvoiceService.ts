@@ -1,6 +1,19 @@
-import { Invoice } from '@prisma/client';
-import { CreateInvoiceRequest, CreateInvoiceRequestSchema } from '../requests/InvoiceRequests';
-import { createInvoice as createInvoiceRepository, getInvoice as getInvoiceRepository, getInvoices as getInvoicesRepository } from '../repositories/InvoiceRepository';
+import { Invoice, InvoiceLine, InvoicePayment } from '@prisma/client';
+import {
+	CreateInvoiceLineRequest,
+	CreateInvoiceLineRequestSchema,
+	CreateInvoicePaymentRequest,
+	CreateInvoicePaymentRequestSchema,
+	CreateInvoiceRequest,
+	CreateInvoiceRequestSchema
+} from '../requests/InvoiceRequests';
+import {
+	createInvoice as createInvoiceRepository,
+	createInvoiceLine as createInvoiceLineRepository,
+	createInvoicePayment as createInvoicePaymentRepository,
+	getInvoice as getInvoiceRepository,
+	getInvoices as getInvoicesRepository
+} from '../repositories/InvoiceRepository';
 
 export async function getInvoiceById(id: string) {
 	return await getInvoiceRepository(id);
@@ -22,5 +35,35 @@ export async function createInvoice(request: CreateInvoiceRequest): Promise<Invo
 		dueAt: request.dueAt,
 		paid: request.paid,
 		currency: request.currency
+	});
+}
+
+export async function createInvoiceLine(request: CreateInvoiceLineRequest): Promise<InvoiceLine> {
+	CreateInvoiceLineRequestSchema.parse(request);
+
+	return await createInvoiceLineRepository({
+		invoice: {
+			connect: {
+				id: request.invoiceId
+			}
+		},
+		lineText: request.lineText,
+		amount: request.amount,
+		quantity: request.quantity,
+	});
+}
+
+export async function createInvoicePayment(request: CreateInvoicePaymentRequest): Promise<InvoicePayment> {
+	CreateInvoicePaymentRequestSchema.parse(request);
+
+	return await createInvoicePaymentRepository({
+		invoice: {
+			connect: {
+				id: request.invoiceId
+			}
+		},
+		amount: request.amount,
+		paidAt: request.paidAt,
+		paymentMethod: request.paymentMethod
 	});
 }

@@ -1,5 +1,5 @@
 import express from 'express';
-import { createInvoice, getInvoiceById, getInvoices } from '../services/InvoiceService';
+import { createInvoice, getInvoiceById, getInvoices, createInvoiceLine, createInvoicePayment } from '../services/InvoiceService';
 import { authorized } from '../middleware/Auth';
 
 const router = express.Router();
@@ -93,6 +93,64 @@ router.get('/:id', async (req, res) => {
 router.post('/', async (req, res) => {
 	const invoice = await createInvoice(req.body);
 	res.send(invoice);
+});
+
+/**
+ * @openapi
+ * '/api/v1/invoices/{id}/lines':
+ *   post:
+ *     description: Insert an invoice line
+ *     tags:
+ *       - Invoice
+ *     parameters:
+ *         - name: id
+ *           in: path
+ *           description: Invoice ID
+ *           required: true
+ *           schema:
+ *             type: string
+ *     responses:
+ *       200:
+ *         description: Returns the created invoice line
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/InvoiceLine'
+ */
+router.post('/:id/lines', async (req, res) => {
+	req.body.invoiceId = req.params.id;
+
+	const invoiceLine = await createInvoiceLine(req.body);
+	res.send(invoiceLine);
+});
+
+/**
+ * @openapi
+ * '/api/v1/invoices/{id}/payments':
+ *   post:
+ *     description: Insert an invoice payment
+ *     tags:
+ *       - Invoice
+ *     parameters:
+ *         - name: id
+ *           in: path
+ *           description: Invoice ID
+ *           required: true
+ *           schema:
+ *             type: string
+ *     responses:
+ *       200:
+ *         description: Returns the created invoice payment
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/InvoicePayment'
+ */
+router.post('/:id/payments', async (req, res) => {
+	req.body.invoiceId = req.params.id;
+
+	const invoicePayment = await createInvoicePayment(req.body);
+	res.send(invoicePayment);
 });
 
 export default router;
