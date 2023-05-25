@@ -25,6 +25,18 @@ export class Result<T> {
 	}
 }
 
+export function formatMoney(amount: number, currency: string) {
+	const formatter = new Intl.NumberFormat('en-US', {
+		style: 'currency',
+		currency
+	});
+
+	return formatter.format(amount);
+}
+
+export function getCountryName(isoCode: string) {
+	return new Intl.DisplayNames(['en'], {type: 'region'}).of(isoCode?.toUpperCase());
+}
 
 axios.defaults.baseURL = BASE_URL;
 
@@ -32,9 +44,22 @@ axios.defaults.baseURL = BASE_URL;
 axios.interceptors.response.use((response) => {
 	return response;
 }, (error) => {
-	if (error.response.status === 401) {
-		return window.location.href = '/auth';
+	if (error.response.status === 403) {
+		//return window.location.href = '/auth';
 	}
 
 	return Promise.reject(error);
 });
+
+axios.interceptors.request.use(
+	function (config) {
+		const token = localStorage.getItem('jwt');
+		if (token && token !== "null" && token !== "undefined") {
+			config.headers['Authorization'] = 'User ' + token;
+		}
+		return config;
+	},
+	function (error) {
+		return Promise.reject(error);
+	}
+);

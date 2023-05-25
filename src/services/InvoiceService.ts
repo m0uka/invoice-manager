@@ -5,10 +5,13 @@ import {
 	CreateInvoicePaymentRequest,
 	CreateInvoicePaymentRequestSchema,
 	CreateInvoiceRequest,
-	CreateInvoiceRequestSchema
+	CreateInvoiceRequestSchema,
+	UpdateInvoiceRequest,
+	UpdateInvoiceRequestSchema
 } from '../requests/InvoiceRequests';
 import {
 	createInvoice as createInvoiceRepository,
+	updateInvoice as updateInvoiceRepository,
 	createInvoiceLine as createInvoiceLineRepository,
 	createInvoicePayment as createInvoicePaymentRepository,
 	getInvoice as getInvoiceRepository,
@@ -36,6 +39,11 @@ export async function createInvoice(request: CreateInvoiceRequest): Promise<Invo
 		paid: request.paid,
 		currency: request.currency
 	});
+}
+
+export async function updateInvoice(id: string, request: UpdateInvoiceRequest): Promise<Invoice> {
+	const parsed = UpdateInvoiceRequestSchema.parse(request);
+	return await updateInvoiceRepository(id, parsed);
 }
 
 export async function createInvoiceLine(request: CreateInvoiceLineRequest): Promise<InvoiceLine> {

@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import axios from 'axios';
 import { Result } from '../api';
+import { createJSONStorage, persist } from 'zustand/middleware';
 
 interface AuthState {
 	jwt: string | null
@@ -10,40 +11,46 @@ interface AuthState {
 	signOut: () => void;
 }
 
-export const useAuthState = create<AuthState>()((set) => ({
-	jwt: null,
-	username: null,
-	signIn: async (username: string, password: string) => {
-		try {
-			const response = await axios.post(`/v1/auth/sign-in`, {
-				username,
-				password
-			});
+export const useAuthState = create<AuthState>()(
+	persist(
+		(set) => ({
+			jwt: null,
+			username: null,
+			signIn: async (username: string, password: string) => {
+				try {
+					const response = await axios.post(`/v1/auth/sign-in`, {
+						username,
+						password
+					});
 
-			set({jwt: response.data.jwt, username});
-			return Result.OK(response.data.jwt);
-		}
-		catch (err: any) {
-			return Result.Failure(err.response.data);
-		}
+					set({jwt: response.data, username});
+					localStorage.setItem('jwt', response.data);
+					return Result.OK(response.data);
+				} catch (err: any) {
+					return Result.Failure(err.response.data);
+				}
 
-	},
-	register: async (username: string, password: string) => {
-		try {
-			const response = await axios.post(`/v1/auth/register`, {
-				username,
-				password
-			});
+			},
+			register: async (username: string, password: string) => {
+				try {
+					const response = await axios.post(`/v1/auth/register`, {
+						username,
+						password
+					});
 
-			set({jwt: response.data.jwt, username});
-			return Result.OK(response.data.jwt);
+					set({jwt: response.data, username});
+					localStorage.setItem('jwt', response.data);
+					return Result.OK(response.data);
+				} catch (err: any) {
+					return Result.Failure(err.response.data);
+				}
+			},
+			signOut: () => {
+				set({jwt: null, username: null});
+				window.location.href = '/auth';
+			}
+		}),
+		{
+			name: 'auth-state',
 		}
-		catch (err: any) {
-			return Result.Failure(err.response.data);
-		}
-	},
-	signOut: () => {
-		set({ jwt: null, username: null });
-		window.location.href = '/auth';
-	}
-}))
+	))

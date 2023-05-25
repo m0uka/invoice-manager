@@ -5,6 +5,10 @@ import { ErrorBoundary } from 'react-error-boundary';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Dashboard from './pages/dashboard/Dashboard';
 import BaseLayout from './components/layout/BaseLayout';
+import Invoices from './pages/invoices/Invoices';
+import InvoiceView from './pages/invoices/InvoiceView';
+import Customers from './pages/customer/Customers';
+import Settings from './pages/settings/Settings';
 
 let router = createBrowserRouter([
     {
@@ -15,6 +19,22 @@ let router = createBrowserRouter([
         path: '/auth',
         element: <Auth />
     },
+    {
+        path: '/invoices',
+        element: <Invoices />
+    },
+    {
+        path: '/invoices/:id',
+        element: <InvoiceView />
+    },
+    {
+        path: '/customers',
+        element: <Customers />
+    },
+    {
+        path: '/settings',
+        element: <Settings />
+    }
 ]);
 
 const queryClient = new QueryClient();

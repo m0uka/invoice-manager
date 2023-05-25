@@ -7,7 +7,7 @@ import { useAuthState } from '../../stores/authStore';
 import { useLocation } from 'react-router-dom';
 
 const navigation = [
-	{name: 'Dashboard', href: '/', icon: HomeIcon},
+	{name: 'Dashboard', href: '/', icon: HomeIcon, exact: true},
 	{name: 'Invoices', href: '/invoices', icon: DocumentDuplicateIcon},
 	{name: 'Customers', href: '/customers', icon: UsersIcon},
 ]
@@ -60,7 +60,6 @@ export default function BaseLayout(props: Props) {
 									>
 										<div className="absolute left-full top-0 flex w-16 justify-center pt-5">
 											<button type="button" className="-m-2.5 p-2.5" onClick={() => setSidebarOpen(false)}>
-												<span className="sr-only">Close sidebar</span>
 												<XMarkIcon className="h-6 w-6 text-white" aria-hidden="true"/>
 											</button>
 										</div>
@@ -78,7 +77,7 @@ export default function BaseLayout(props: Props) {
 																<a
 																	href={item.href}
 																	className={clsx(
-																		location.pathname.startsWith(item.href)
+																		(item.exact ? location.pathname === item.href : location.pathname.startsWith(item.href))
 																			? 'bg-gray-800 text-white'
 																			: 'text-gray-400 hover:text-white hover:bg-gray-800',
 																		'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
@@ -94,7 +93,12 @@ export default function BaseLayout(props: Props) {
 												<li className="mt-auto">
 													<a
 														href="/settings"
-														className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-400 hover:bg-gray-800 hover:text-white"
+														className={clsx(
+															location.pathname.startsWith('/settings')
+																? 'bg-gray-800 text-white'
+																: 'text-gray-400 hover:text-white hover:bg-gray-800',
+															'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
+														)}
 													>
 														<Cog6ToothIcon className="h-6 w-6 shrink-0" aria-hidden="true"/>
 														Settings
@@ -124,7 +128,7 @@ export default function BaseLayout(props: Props) {
 												<a
 													href={item.href}
 													className={clsx(
-														location.pathname.startsWith(item.href)
+														(item.exact ? location.pathname === item.href : location.pathname.startsWith(item.href))
 															? 'bg-gray-800 text-white'
 															: 'text-gray-400 hover:text-white hover:bg-gray-800',
 														'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
@@ -140,7 +144,12 @@ export default function BaseLayout(props: Props) {
 								<li className="mt-auto">
 									<a
 										href="/settings"
-										className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-400 hover:bg-gray-800 hover:text-white"
+										className={clsx(
+											location.pathname.startsWith('/settings')
+												? 'bg-gray-800 text-white'
+												: 'text-gray-400 hover:text-white hover:bg-gray-800',
+											'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
+										)}
 									>
 										<Cog6ToothIcon className="h-6 w-6 shrink-0" aria-hidden="true"/>
 										Settings
@@ -154,11 +163,9 @@ export default function BaseLayout(props: Props) {
 				<div className="lg:pl-72">
 					<div className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
 						<button type="button" className="-m-2.5 p-2.5 text-gray-700 lg:hidden" onClick={() => setSidebarOpen(true)}>
-							<span className="sr-only">Open sidebar</span>
 							<Bars3Icon className="h-6 w-6" aria-hidden="true"/>
 						</button>
 
-						{/* Separator */}
 						<div className="h-6 w-px bg-gray-900/10 lg:hidden" aria-hidden="true"/>
 
 						<div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
@@ -166,7 +173,6 @@ export default function BaseLayout(props: Props) {
 							<div className="flex items-center gap-x-4 lg:gap-x-6">
 								<Menu as="div" className="relative">
 									<Menu.Button className="-m-1.5 flex items-center p-1.5">
-										<span className="sr-only">Open user menu</span>
 										<span className="hidden lg:flex lg:items-center">
 										  <span className="text-sm font-semibold leading-6 text-gray-900" aria-hidden="true">
 											{authState.username}

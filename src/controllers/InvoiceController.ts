@@ -1,5 +1,5 @@
 import express from 'express';
-import { createInvoice, getInvoiceById, getInvoices, createInvoiceLine, createInvoicePayment } from '../services/InvoiceService';
+import { createInvoice, getInvoiceById, getInvoices, createInvoiceLine, createInvoicePayment, updateInvoice } from '../services/InvoiceService';
 import { authorized } from '../middleware/Auth';
 
 const router = express.Router();
@@ -75,6 +75,33 @@ router.get('/:id', async (req, res) => {
 	const invoice = await getInvoiceById(req.params.id);
 	res.send(invoice);
 })
+
+/**
+ * @openapi
+ * '/api/v1/invoices/{id}':
+ *   put:
+ *     description: Update an invoice
+ *     tags:
+ *       - Invoice
+ *     parameters:
+ *         - name: id
+ *           in: path
+ *           description: Invoice ID
+ *           required: true
+ *           schema:
+ *             type: string
+ *     responses:
+ *       200:
+ *         description: Returns the updated invoice
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Invoice'
+ */
+router.put('/:id', async (req, res) => {
+	const invoice = await updateInvoice(req.params.id, req.body);
+	res.send(invoice);
+});
 
 /**
  * @openapi
