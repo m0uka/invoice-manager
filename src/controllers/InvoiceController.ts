@@ -31,6 +31,44 @@ router.use(authorized);
  *           format: date-time
  *         currency:
  *           type: string
+ *     InvoiceLine:
+ *        type: object
+ *        properties:
+ *          id:
+ *            type: string
+ *          invoiceId:
+ *            type: string
+ *          lineText:
+ *            type: string
+ *          amount:
+ *            type: number
+ *          quantity:
+ *            type: number
+ *          createdAt:
+ *            type: string
+ *            format: date-time
+ *          updatedAt:
+ *            type: string
+ *            format: date-time
+ *     InvoicePayment:
+ *        type: object
+ *        properties:
+ *          id:
+ *            type: string
+ *          invoiceId:
+ *            type: string
+ *          paymentMethod:
+ *            type: string
+ *          amount:
+ *            type: number
+ *          externalPaymentId:
+ *            type: number
+ *          createdAt:
+ *            type: string
+ *            format: date-time
+ *          updatedAt:
+ *            type: string
+ *            format: date-time
  * '/api/v1/invoices':
  *   get:
  *     description: Lists all invoices(paginated)
@@ -83,6 +121,12 @@ router.get('/:id', async (req, res) => {
  *     description: Update an invoice
  *     tags:
  *       - Invoice
+ *     requestBody:
+ *         description: Invoice object
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Invoice'
  *     parameters:
  *         - name: id
  *           in: path
@@ -129,6 +173,12 @@ router.post('/', async (req, res) => {
  *     description: Insert an invoice line
  *     tags:
  *       - Invoice
+ *     requestBody:
+ *         description: Invoice line object
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/InvoiceLine'
  *     parameters:
  *         - name: id
  *           in: path
@@ -158,6 +208,12 @@ router.post('/:id/lines', async (req, res) => {
  *     description: Insert an invoice payment
  *     tags:
  *       - Invoice
+ *     requestBody:
+ *         description: Invoice payment object
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/InvoicePayment'
  *     parameters:
  *         - name: id
  *           in: path
